@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Survey of Earned Doctorates — Interactive Dashboard</title><style>body{margin:0;font:16px system-ui;background:#f4f6f9;color:#172033}main{min-height:100vh;display:grid;place-items:center;text-align:center;padding:2rem}.spinner{width:36px;height:36px;border:4px solid #dce3ec;border-top-color:#e87500;border-radius:50%;animation:s .8s linear infinite;margin:auto}@keyframes s{to{transform:rotate(360deg)}}</style></head><body><main><div><div class="spinner"></div><h2>Loading interactive dashboard…</h2><p>Preparing the Survey of Earned Doctorates data.</p></div></main><script>
+(async()=>{
+try{
+const files=['payload/part-001.txt', 'payload/part-002.txt', 'payload/part-003.txt', 'payload/part-004.txt', 'payload/part-005.txt', 'payload/part-006.txt', 'payload/part-007.txt', 'payload/part-008.txt', 'payload/part-009.txt', 'payload/part-010.txt', 'payload/part-011.txt', 'payload/part-012.txt', 'payload/part-013.txt', 'payload/part-014.txt', 'payload/part-015.txt', 'payload/part-016.txt', 'payload/part-017.txt', 'payload/part-018.txt', 'payload/part-019.txt', 'payload/part-020.txt', 'payload/part-021.txt', 'payload/part-022.txt', 'payload/part-023.txt', 'payload/part-024.txt'];
+const encoded=(await Promise.all(files.map(async f=>{const r=await fetch(f);if(!r.ok)throw new Error(`Could not load ${f}`);return r.text()})))).join('');
+const bytes=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));
+if(!('DecompressionStream' in window))throw new Error('Please use a current version of Chrome, Edge, Firefox, or Safari.');
+const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+const html=await new Response(stream).text();
+document.open();document.write(html);document.close();
+}catch(e){document.querySelector('main').innerHTML='<div><h1>Dashboard could not load</h1><p>'+e.message+'</p></div>';console.error(e)}
+})();
+</script></body></html>
